@@ -9,6 +9,7 @@ use App\Models\Segment;
 use App\Models\SegmentJudgeSubmission;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class SegmentController extends Controller
 {
@@ -206,4 +207,113 @@ class SegmentController extends Controller
 
         return $rows;
     }
+
+    public function finalResults()
+{
+    $segment = Segment::where('name', 'Final Q&A')->firstOrFail();
+
+    // Get totals strictly from Final Q&A
+    $totals = Score::selectRaw('contestant_id, SUM(score) as total_score')
+        ->where('segment_id', $segment->id)
+        ->groupBy('contestant_id')
+        ->pluck('total_score', 'contestant_id');
+
+    $males = $this->buildFinalPlacement('male', $totals);
+    $females = $this->buildFinalPlacement('female', $totals);
+
+    return view('admin.results.final', compact('males', 'females'));
+}
+
+private function buildFinalPlacement(string $gender, $totals)
+{
+    $rows = Contestant::where('gender', $gender)->get()
+        ->map(function ($c) use ($totals) {
+            return [
+                'id' => $c->id,
+                'number' => $c->number,
+                'name' => $c->name,
+                'total' => (float)($totals[$c->id] ?? 0),
+                'rank' => null,
+                'tied' => false,
+            ];
+        })
+        ->sortByDesc('total')
+        ->take(5)
+        ->values()
+        ->all();
+
+    // Assign rank
+    foreach ($rows as $i => &$r) {
+        $r['rank'] = $i + 1;
+    }
+    unset($r);
+
+    // Tie detection
+    $counts = [];
+    foreach ($rows as $r) {
+        $key = number_format($r['total'], 1, '.', '');
+        $counts[$key] = ($counts[$key] ?? 0) + 1;
+    }
+
+    foreach ($rows as &$r) {
+        $key = number_format($r['total'], 1, '.', '');
+        $r['tied'] = ($counts[$key] ?? 0) > 1;
+    }
+    unset($r);
+
+    return $rows;
+}
+
+public function resolveTie(Request $request)
+{
+    $user = auth()->user();
+
+    if (!$user->is_chairman) {
+        abort(403);
+    }
+
+    $request->validate([
+        'contestant_id' => 'required|exists:contestants,id',
+        'gender' => 'required|in:male,female',
+    ]);
+
+    // Add +0.1 bonus to break tie
+    $segment = Segment::where('name', 'Final Q&A')->first();
+
+    Score::where('segment_id', $segment->id)
+        ->where('contestant_id', $request->contestant_id)
+        ->update([
+            'score' => \DB::raw('score + 0.1')
+        ]);
+
+    return back()->with('status', 'Tie resolved by Chairman.');
+}
+
+public function finalResultsPdf()
+{
+    $segment = Segment::where('name', 'Final Q&A')->firstOrFail();
+
+    // Final placement = Final Q&A only
+    $totals = Score::selectRaw('contestant_id, SUM(score) as total_score')
+        ->where('segment_id', $segment->id)
+        ->groupBy('contestant_id')
+        ->pluck('total_score', 'contestant_id');
+
+    $males = $this->buildFinalPlacement('male', $totals);
+    $females = $this->buildFinalPlacement('female', $totals);
+
+    $data = [
+        'eventTitle' => 'Final Results',
+        'basis' => 'Final Q&A Totals Only',
+        'generatedAt' => now()->format('F d, Y h:i A'),
+        'males' => $males,
+        'females' => $females,
+    ];
+
+    $pdf = Pdf::loadView('admin.results.final_pdf', $data)
+        ->setPaper('a4', 'portrait'); // change to 'landscape' if you want
+
+    return $pdf->download('Final_Results_' . now()->format('Ymd_His') . '.pdf');
+}
+
 }

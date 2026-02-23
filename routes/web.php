@@ -56,6 +56,15 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/rankings/top5-candidates', [RankingController::class, 'top5Candidates'])
         ->name('rankings.top5Candidates');
 
+        Route::get('/results/final', [SegmentController::class, 'finalResults'])
+    ->name('results.final');
+
+Route::post('/results/final/resolve-tie', [SegmentController::class, 'resolveTie'])
+    ->name('results.resolveTie');
+
+    Route::get('/results/final/pdf', [SegmentController::class, 'finalResultsPdf'])
+    ->name('results.final.pdf');
+
 });
 
 
