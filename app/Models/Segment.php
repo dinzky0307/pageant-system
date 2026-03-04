@@ -30,4 +30,8 @@ public function criterionScores()
     return $this->hasMany(\App\Models\CriterionScore::class);
 }
 
+public function judgeSubmissions()
+{
+    return $this->hasMany(SegmentJudgeSubmission::class);
+}
 }

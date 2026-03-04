@@ -3,10 +3,10 @@
         <div style="text-align:center;font-size:30px;font-weight:900;">
             Scoring - {{ $segment->name }}
         </div>
-        <a href="{{ route('judge.scoring.picker') }}"
-   style="padding:8px 12px;border:1px solid #111;border-radius:8px;display:inline-block;margin-bottom:12px;">
-   Switch to Number Picker Mode
-</a>
+            <a href="{{ route('judge.scoring.picker') }}"
+    style="padding:8px 12px;border:1px solid #111;border-radius:8px;display:inline-block;margin-bottom:12px;">
+    Switch to Number Picker Mode
+    </a>
 
     </x-slot>
 

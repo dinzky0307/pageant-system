@@ -12,7 +12,7 @@ use App\Http\Controllers\Judge\ScoringController;
     
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 })->name('home');
 
 /**
@@ -81,6 +81,8 @@ Route::middleware(['auth','role:judge'])->prefix('judge')->group(function () {
 
 });
 
-
+Route::get('/judge/scoring/waiting', function () {
+    return view('judge.scoring.waiting');
+})->name('judge.scoring.waiting')->middleware(['auth']);
 
 require __DIR__ . '/auth.php';

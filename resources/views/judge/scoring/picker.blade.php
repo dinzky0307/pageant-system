@@ -1,17 +1,17 @@
 <x-app-layout>
-    <x-slot name="header">
-    <div style="text-align:center; line-height:1.1; margin-top:-50px;">
-        <div style="font-size:26px;font-weight:900; letter-spacing:0.4px;">
+
+    <div style="text-align:center; line-height:1.1; margin-top:-50px;" class="bg-red-600">
+        <div style="font-size:26px;font-weight:900; letter-spacing:0.4px;" class="text-white">
             {{ strtoupper($segment->name) }} - SCORING
         </div>
-        <div style="color:#666;margin-top:4px;font-size:13px;">
+        <div style="margin-top:4px;font-size:13px;" class="text-gray-200">
             Click a number to score. Autosaves locally. Submit only when all are complete.
         </div>
     </div>
-</x-slot>
 
 
     <div style="padding:18px;max-width:1300px;margin:0 auto;">
+
         @if(session('status'))
             <div style="padding:10px;border:1px solid #d1fae5;background:#ecfdf5;margin-bottom:14px;border-radius:10px;">
                 {{ session('status') }}
@@ -19,124 +19,120 @@
         @endif
 
         <style>
+            .panel.male input[type="range"]::-webkit-slider-thumb {
+                background: var(--male);
+            }
+
+            .panel.female input[type="range"]::-webkit-slider-thumb {
+                background: var(--female);
+            }
             :root{
-    /* Pantone-ish theme tokens (tweak later if you want exact book match) */
-    --male: #0057B8;          /* Pantone-like Blue */
-    --male-100: #EAF2FF;
-    --male-200: #CFE1FF;
+                --male: #dc2626;          /* red-600 */
+                --male-100: #fee2e2;
+                --male-200: #fecaca;
 
-    --female: #E4007C;        /* Pantone-like Pink */
-    --female-100: #FFE7F3;
-    --female-200: #FFC3E1;
+                --female: #374151;        /* gray-700 */
+                --female-100: #f3f4f6;
+                --female-200: #e5e7eb;
 
-    --ink: #111827;
-    --muted: #6b7280;
-}
-/* Panel theming */
-.panel.male {
-    background: linear-gradient(180deg, var(--male-100) 0%, #ffffff 45%);
-    border: 2px solid var(--male-200);
-}
-.panel.female {
-    background: linear-gradient(180deg, var(--female-100) 0%, #ffffff 45%);
-    border: 2px solid var(--female-200);
-}
+                --ink: #111827;
+                --muted: #6b7280;
+            }
 
-/* Titles */
-.panel.male .panelTitle{ color: var(--male); text-align: center;}
-.panel.female .panelTitle{ color: var(--female); text-align: center;}
+            .panel.male {
+                background: linear-gradient(180deg, var(--male-100) 0%, #ffffff 45%);
+                border: 2px solid var(--male-200);
+            }
 
-/* Number buttons default border color */
-.panel.male .numBtn{ border-color: var(--male-200); }
-.panel.female .numBtn{ border-color: var(--female-200); }
+            .panel.female {
+                background: linear-gradient(180deg, var(--female-100) 0%, #ffffff 45%);
+                border: 2px solid var(--female-200);
+            }
 
-/* Active number button (selected) */
-.panel.male .numBtn.active{
-    background: var(--male);
-    border-color: var(--male);
-    color:#fff;
-}
-.panel.female .numBtn.active{
-    background: var(--female);
-    border-color: var(--female);
-    color:#fff;
-}
+            .panel.male .panelTitle{ color: var(--male); text-align: center;}
+            .panel.female .panelTitle{ color: var(--female); text-align: center;}
 
-/* Done state (completed contestant) - still green, but tinted border */
-.panel.male .numBtn.done{ border-color: #16a34a; }
-.panel.female .numBtn.done{ border-color: #16a34a; }
+            .panel.male .numBtn{ border-color: var(--male-200); }
+            .panel.female .numBtn{ border-color: var(--female-200); }
 
-/* Photo box border accent */
-.panel.male .photoBox{ border-color: var(--male-200); }
-.panel.female .photoBox{ border-color: var(--female-200); }
+            .panel.male .numBtn.active{
+                background: var(--male);
+                border-color: var(--male);
+                color:#fff;
+            }
 
-/* Criteria box accent */
-.panel.male .criteriaBox{ border-color: var(--male-200); }
-.panel.female .criteriaBox{ border-color: var(--female-200); }
+            .panel.female .numBtn.active{
+                background: var(--female);
+                border-color: var(--female);
+                color:#fff;
+            }
 
-/* Input focus highlight by panel */
-.panel.male .input:focus{
-    outline: 3px solid rgba(0,87,184,.25);
-    border-color: var(--male);
-}
-.panel.female .input:focus{
-    outline: 3px solid rgba(228,0,124,.25);
-    border-color: var(--female);
-}
+            .panel.male .numBtn.done{ border-color: #16a34a; }
+            .panel.female .numBtn.done{ border-color: #16a34a; }
 
-/* Submit button polish */
-.submit{
-    background: linear-gradient(180deg, #111 0%, #000 100%);
-    border-color:#000;
-    box-shadow: 0 8px 18px rgba(0,0,0,.12);
-}
-.submit:hover{ filter: brightness(1.08); }
+            .panel.male .photoBox{ border-color: var(--male-200); }
+            .panel.female .photoBox{ border-color: var(--female-200); }
+
+            .panel.male .criteriaBox{ border-color: var(--male-200); }
+            .panel.female .criteriaBox{ border-color: var(--female-200); }
+
+            .panel.male .input:focus{
+                outline: 3px solid rgba(220,38,38,.25);
+                border-color: var(--male);
+            }
+
+            .panel.female .input:focus{
+                outline: 3px solid rgba(55,65,81,.25);
+                border-color: var(--female);
+            }
+
+            .submit{
+                background: #dc2626;
+                border-color:#dc2626;
+                box-shadow: 0 8px 18px rgba(220,38,38,.15);
+            }
+
+            .submit:hover{
+                background:#b91c1c;
+            }
 
             .wrap { border:1px solid #e5e7eb; border-radius:12px; background:#fff; padding:14px; }
             .topline { display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
             .topline .left { font-weight:900; }
             .topline .right { color:#666; font-weight:700; }
 
-            .grid2 { 
-    display:grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap:96px;              /* ✅ ~1 inch horizontal space */
-}
+            .grid2 {
+                display:grid;
+                grid-template-columns: 1fr 1fr;
+                gap:96px;
+            }
 
-/* On smaller screens, reduce gap so it doesn’t look broken */
-@media(max-width: 1200px){
-    .grid2{
-        gap:48px;
-    }
-}
-@media(max-width: 900px){
-    .grid2{
-        grid-template-columns:1fr;
-        gap:24px;
-    }
-}
-.panel.male{
-    box-shadow: 6px 0 0 rgba(0,0,0,0.02);
-}
-.panel.female{
-    box-shadow: -6px 0 0 rgba(0,0,0,0.02);
-}
+            @media(max-width: 1200px){
+                .grid2{ gap:48px; }
+            }
 
+            @media(max-width: 900px){
+                .grid2{
+                    grid-template-columns:1fr;
+                    gap:24px;
+                }
+            }
 
-            /* ✅ one row only (scroll if small screen) */
+            .panel.male{ box-shadow: 6px 0 0 rgba(0,0,0,0.02); }
+            .panel.female{ box-shadow: -6px 0 0 rgba(0,0,0,0.02); }
+
             .numGrid{
                 display:flex;
                 gap:8px;
                 flex-wrap:nowrap;
-                justify-content:flex-start;
                 overflow-x:auto;
-                -webkit-overflow-scrolling:touch;
                 margin-top:10px;
                 padding:10px;
                 border:1px solid #e5e7eb;
                 border-radius:10px;
                 background:#fff;
             }
+
             .numBtn{
                 flex:1;
                 margin:0 4px;
@@ -145,16 +141,16 @@
                 border:1px solid #ccc;
                 text-align:center;
             }
-            .numBtn.active { background:#111; color:#fff; border-color:#111; }
+
             .numBtn.done { background:#dcfce7; border-color:#16a34a; }
-            .numBtn.active.done { background:#111; color:#fff; border-color:#111; }
+            .numBtn.active.done { color:#fff; }
 
             .main { display:grid; grid-template-columns: 1.1fr 1fr; gap:12px; margin-top:12px; }
             @media(max-width: 1050px){ .main { grid-template-columns:1fr; } }
 
             .photoBox { border:1px solid #e5e7eb; border-radius:12px; background:#fff; padding:12px; }
-            .photo { height:220px; border-radius:12px; background:#e5e7eb; display:flex; align-items:center; justify-content:center;
-                     font-size:54px; font-weight:900; }
+            .photo { height:220px; border-radius:12px; background:#e5e7eb; display:flex; align-items:center; justify-content:center; font-size:54px; font-weight:900; }
+
             .who { text-align:center; margin-top:10px; }
             .who .name { font-weight:900; font-size:18px; }
             .who .meta { color:#666; margin-top:2px; }
@@ -173,15 +169,9 @@
                 background:#fafafa;
                 margin-bottom:6px;
             }
+
             .cname { font-weight:800; padding-top:10px; }
 
-            .panel.male .cname{ color: var(--ink); }
-.panel.female .cname{ color: var(--ink); }
-.panel.male .critTitle{ color: var(--male); }
-.panel.female .critTitle{ color: var(--female); }
-
-
-            /* ✅ uniform textbox size, fits 10.0 */
             .input{
                 width:120px;
                 height:44px;
@@ -190,12 +180,12 @@
                 text-align:center;
                 box-sizing:border-box;
             }
+
             .input.invalid{
                 border:2px solid #ef4444;
                 background:#fef2f2;
             }
 
-            /* ✅ inline warning under each textbox */
             .inlineWarn{
                 margin-top:6px;
                 font-size:12px;
@@ -205,11 +195,13 @@
                 text-align:right;
                 max-width:140px;
             }
+
             .inlineWarn.show{ display:block; }
 
             .footer { display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:10px; }
             .progress { color:#666; font-weight:800; }
-            .submit { padding:10px 16px; border:1px solid #111; background:#111; color:#fff; border-radius:10px; cursor:pointer; font-weight:900; }
+
+            .submit { padding:10px 16px; border:1px solid; color:#fff; border-radius:10px; cursor:pointer; font-weight:900; }
             .submit:disabled { opacity:.6; cursor:not-allowed; }
 
             .autosave { font-size:12px; color:#666; margin-top:6px; text-align:center; }
@@ -218,7 +210,7 @@
         <form method="POST" action="{{ route('judge.scoring.submit', $segment) }}" id="pickerForm">
             @csrf
             <div id="hiddenInputs"></div>
-
+            <div class="mb-8"></div>
             <div class="wrap">
                 <div class="topline">
                     <div class="left">SHEET VIEW</div>
@@ -415,25 +407,39 @@
                     left.className = 'cname';
                     left.textContent = crit.name;
 
-                    // right container: input + inline warning
                     const rightBox = document.createElement('div');
                     rightBox.style.display = 'flex';
                     rightBox.style.flexDirection = 'column';
                     rightBox.style.alignItems = 'flex-end';
 
+                    // ===== INPUT =====
                     const input = document.createElement('input');
                     input.className = 'input';
                     input.type = 'text';
                     input.inputMode = 'decimal';
                     input.placeholder = '1-10';
-                    input.value = (store[contestantId] && store[contestantId][crit.id]) ? store[contestantId][crit.id] : '';
+                    input.value = (store[contestantId] && store[contestantId][crit.id])
+                        ? store[contestantId][crit.id]
+                        : '';
 
+                    // ===== SLIDER =====
+                    const slider = document.createElement('input');
+                    slider.type = 'range';
+                    slider.min = 1;
+                    slider.max = 10;
+                    slider.step = 1;
+                    slider.value = input.value || 1;
+                    slider.style.width = '120px';
+                    slider.style.marginTop = '6px';
+
+                    // ===== WARNING =====
                     const warn = document.createElement('div');
                     warn.className = 'inlineWarn';
                     warn.textContent = 'Please input numbers between 1 and 10.';
 
                     function syncValidation(){
                         const raw = String(input.value || '').trim();
+
                         if(raw !== '' && !isValidScore(raw)){
                             input.classList.add('invalid');
                             warn.classList.add('show');
@@ -443,19 +449,37 @@
                         }
                     }
 
-                    // initial state (in case localStorage has invalid)
-                    syncValidation();
+                    // ===== SLIDER → INPUT =====
+                    slider.addEventListener('input', ()=>{
+                        input.value = slider.value;
 
-                    input.addEventListener('input', ()=>{
                         if(!store[contestantId]) store[contestantId] = {};
-                        store[contestantId][crit.id] = input.value;
+                        store[contestantId][crit.id] = slider.value;
 
                         saveLocal();
                         syncValidation();
                         renderAll();
                     });
 
+                    // ===== INPUT → SLIDER =====
+                    input.addEventListener('input', ()=>{
+                        if(!store[contestantId]) store[contestantId] = {};
+                        store[contestantId][crit.id] = input.value;
+
+                        if(isValidScore(input.value)){
+                            slider.value = input.value;
+                        }
+
+                        saveLocal();
+                        syncValidation();
+                        renderAll();
+                    });
+
+                    // Initial validation
+                    syncValidation();
+
                     rightBox.appendChild(input);
+                    rightBox.appendChild(slider);
                     rightBox.appendChild(warn);
 
                     row.appendChild(left);

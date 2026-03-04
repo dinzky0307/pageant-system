@@ -1,6 +1,6 @@
 <x-app-layout>
+    <meta http-equiv="refresh" content="5">
     <x-slot name="header">Segments Control</x-slot>
-
     <div class="p-6 space-y-4">
         @if(session('status'))
             <div style="padding:10px;border:1px solid #d1fae5;background:#ecfdf5;">

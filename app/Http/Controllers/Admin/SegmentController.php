@@ -17,12 +17,15 @@ class SegmentController extends Controller
     {
         $judgeCount = User::where('role', 'judge')->count();
 
-        $segments = Segment::orderBy('display_order')->get();
+        $segments = Segment::withCount([
+            'judgeSubmissions as submitted_count'
+        ])
+            ->orderBy('display_order')
+            ->get();
 
-        foreach ($segments as $s) {
-            $s->judge_count = $judgeCount;
-            $s->submitted_count = SegmentJudgeSubmission::where('segment_id', $s->id)->count();
-        }
+        $segments->each(function ($segment) use ($judgeCount) {
+            $segment->judge_count = $judgeCount;
+        });
 
         return view('admin.segments.index', compact('segments'));
     }

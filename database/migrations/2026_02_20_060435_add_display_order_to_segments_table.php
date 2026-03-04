@@ -8,14 +8,14 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('segments', function (Blueprint $table) {
-            $table->unsignedInteger('display_order')->default(999)->after('name');
+            //
         });
     }
 
     public function down(): void
     {
         Schema::table('segments', function (Blueprint $table) {
-            $table->dropColumn('display_order');
+            //
         });
     }
 };

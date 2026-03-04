@@ -20,19 +20,29 @@ class ScoringController extends Controller
     {
         $segment = Segment::where('is_open', true)->first();
 
+        // No active segment
         if (!$segment) {
             return view('judge.scoring.none');
         }
 
+        // If segment is locked
         if ($segment->is_locked) {
             return view('judge.scoring.locked', compact('segment'));
+        }
+
+        // If judge already submitted → show waiting
+        $alreadySubmitted = SegmentJudgeSubmission::where('segment_id', $segment->id)
+            ->where('user_id', auth()->id())
+            ->exists();
+
+        if ($alreadySubmitted) {
+            return view('judge.scoring.waiting', compact('segment'));
         }
 
         $criteria = $segment->criteria()->get();
 
         $contestants = $this->resolveContestantsForSegment($segment);
 
-        // Existing scores (for display safety)
         $existingRows = CriterionScore::where('segment_id', $segment->id)
             ->where('user_id', auth()->id())
             ->get(['contestant_id', 'criterion_id', 'score']);
@@ -136,22 +146,16 @@ class ScoringController extends Controller
 
         // Mark submission
         SegmentJudgeSubmission::create([
-            'segment_id'  => $segment->id,
-            'user_id'     => auth()->id(),
-            'submitted_at'=> now(),
+            'segment_id'   => $segment->id,
+            'user_id'      => auth()->id(),
+            'submitted_at' => now(),
         ]);
 
         // Auto-lock if all judges submitted
         $justLocked = $lockService->tryLock($segment);
 
-        return redirect()
-            ->route('judge.scoring.index')
-            ->with(
-                'status',
-                $justLocked
-                    ? 'Submitted. Segment is now LOCKED (all judges submitted).'
-                    : 'Submitted successfully.'
-            );
+        // Redirect to waiting screen
+        return redirect()->route('judge.scoring.picker');
     }
 
     /**
@@ -167,6 +171,15 @@ class ScoringController extends Controller
 
         if ($segment->is_locked) {
             return view('judge.scoring.locked', compact('segment'));
+        }
+
+        // If judge already submitted → show waiting
+        $alreadySubmitted = SegmentJudgeSubmission::where('segment_id', $segment->id)
+            ->where('user_id', auth()->id())
+            ->exists();
+
+        if ($alreadySubmitted) {
+            return view('judge.scoring.waiting', compact('segment'));
         }
 
         $criteria = $segment->criteria()->get();

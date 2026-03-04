@@ -5,7 +5,8 @@
         <div class="text-lg font-semibold">Pageant Control Panel</div>
 
         <div class="space-x-3">
-            <a class="px-4 py-2 border inline-block" href="{{ route('admin.segments.index') }}">
+            <a class="px-4 py-2 border inline-block" 
+               href="{{ route('admin.segments.index') }}">
                 Manage Segments
             </a>
         </div>
